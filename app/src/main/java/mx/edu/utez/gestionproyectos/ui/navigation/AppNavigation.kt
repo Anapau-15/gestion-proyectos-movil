@@ -38,30 +38,40 @@ fun AppNavigation() {
                     navController.currentBackStackEntryAsState().value?.destination?.route
 
                 items.forEach { screen ->
-                    NavigationBarItem(
-                        selected = currentRoute == screen.route,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.startDestinationId)
-                                launchSingleTop = true
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = screen.icon,
-                                contentDescription = screen.label
-                            )
-                        },
-                        label = { Text(screen.label) },
-
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color(0xFF378C8E),
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                    NavigationBar(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        tonalElevation = 4.dp
+                    ) {
+                        val items = listOf(
+                            Screen.Home,
+                            Screen.Projects,
+                            Screen.Deposits,
+                            Screen.Team,
+                            Screen.Profile
                         )
-                    )
+
+                        val currentRoute =
+                            navController.currentBackStackEntryAsState().value?.destination?.route
+
+                        items.forEach { screen ->
+                            NavigationBarItem(
+                                selected = currentRoute == screen.route,
+                                onClick = {
+                                    navController.navigate(screen.route) {
+                                        popUpTo(navController.graph.startDestinationId)
+                                        launchSingleTop = true
+                                    }
+                                },
+                                icon = {
+                                    Icon(
+                                        imageVector = screen.icon,
+                                        contentDescription = screen.label
+                                    )
+                                },
+                                label = { Text(screen.label) }
+                            )
+                        }
+                    }
                 }
             }
         }
