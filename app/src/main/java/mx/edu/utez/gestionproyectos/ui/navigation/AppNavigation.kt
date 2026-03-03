@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.*
 import mx.edu.utez.gestionproyectos.ui.home.HomeScreen
 import mx.edu.utez.gestionproyectos.ui.projects.ProjectsScreen
@@ -16,9 +18,14 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
 
-    Scaffold(
-        bottomBar = {
-            NavigationBar {
+
+
+            Scaffold(
+                bottomBar = {
+                    NavigationBar(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        tonalElevation = 4.dp
+                    ) {
                 val items = listOf(
                     Screen.Home,
                     Screen.Projects,
@@ -45,9 +52,15 @@ fun AppNavigation() {
                                 contentDescription = screen.label
                             )
                         },
-                        label = {
-                            Text(screen.label)
-                        }
+                        label = { Text(screen.label) },
+
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color(0xFF378C8E),
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                        )
                     )
                 }
             }
