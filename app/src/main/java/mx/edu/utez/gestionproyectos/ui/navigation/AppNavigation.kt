@@ -18,14 +18,14 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
 
+    Scaffold(
+        bottomBar = {
 
+            NavigationBar(
+                containerColor = MaterialTheme.colorScheme.surface,
+                tonalElevation = 4.dp
+            ) {
 
-            Scaffold(
-                bottomBar = {
-                    NavigationBar(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        tonalElevation = 4.dp
-                    ) {
                 val items = listOf(
                     Screen.Home,
                     Screen.Projects,
@@ -38,40 +38,35 @@ fun AppNavigation() {
                     navController.currentBackStackEntryAsState().value?.destination?.route
 
                 items.forEach { screen ->
-                    NavigationBar(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        tonalElevation = 4.dp
-                    ) {
-                        val items = listOf(
-                            Screen.Home,
-                            Screen.Projects,
-                            Screen.Deposits,
-                            Screen.Team,
-                            Screen.Profile
-                        )
 
-                        val currentRoute =
-                            navController.currentBackStackEntryAsState().value?.destination?.route
-
-                        items.forEach { screen ->
-                            NavigationBarItem(
-                                selected = currentRoute == screen.route,
-                                onClick = {
-                                    navController.navigate(screen.route) {
-                                        popUpTo(navController.graph.startDestinationId)
-                                        launchSingleTop = true
-                                    }
-                                },
-                                icon = {
-                                    Icon(
-                                        imageVector = screen.icon,
-                                        contentDescription = screen.label
-                                    )
-                                },
-                                label = { Text(screen.label) }
+                    NavigationBarItem(
+                        selected = currentRoute == screen.route,
+                        onClick = {
+                            navController.navigate(screen.route) {
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
+                            }
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = screen.icon,
+                                contentDescription = screen.label,
+                                tint = if (currentRoute == screen.route)
+                                    Color(0xFF247273)
+                                else
+                                    Color.Gray
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = screen.label,
+                                color = if (currentRoute == screen.route)
+                                    Color(0xFF247273)
+                                else
+                                    Color.Gray
                             )
                         }
-                    }
+                    )
                 }
             }
         }
@@ -83,7 +78,7 @@ fun AppNavigation() {
             modifier = Modifier.padding(padding)
         ) {
 
-            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.Projects.route) { ProjectsScreen() }
             composable(Screen.Deposits.route) { DepositsScreen() }
             composable(Screen.Team.route) { TeamScreen() }

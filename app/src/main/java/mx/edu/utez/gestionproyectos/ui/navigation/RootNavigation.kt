@@ -1,8 +1,7 @@
 package mx.edu.utez.gestionproyectos.ui.navigation
 
-
 import androidx.compose.runtime.*
-import mx.edu.utez.gestionproyectos.ui.auth.LoginScreen
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun RootNavigation() {
@@ -10,10 +9,16 @@ fun RootNavigation() {
     var isLoggedIn by remember { mutableStateOf(false) }
 
     if (isLoggedIn) {
+
         AppNavigation()
+
     } else {
-        LoginScreen(
-            onLoginClick = {
+
+        val navController = rememberNavController()
+
+        AuthNavigation(
+            navController = navController,
+            onLoginSuccess = {
                 isLoggedIn = true
             }
         )

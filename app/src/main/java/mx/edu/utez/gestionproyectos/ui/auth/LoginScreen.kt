@@ -1,46 +1,37 @@
 package mx.edu.utez.gestionproyectos.ui.auth
 
-import mx.edu.utez.gestionproyectos.ui.components.GradientButton
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
 import mx.edu.utez.gestionproyectos.R
+import mx.edu.utez.gestionproyectos.ui.components.AuthBackground
+import mx.edu.utez.gestionproyectos.ui.components.AuthCard
+import mx.edu.utez.gestionproyectos.ui.components.GradientButton
 
 @Composable
-fun LoginScreen(onLoginClick: () -> Unit) {
-
+fun LoginScreen(
+    onLoginClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF1E6F6F),
-                        Color(0xFF2E8B8B),
-                        Color(0xFFDCEEEE)
-                    )
-                )
-            )
-    ) {
+    AuthBackground {
 
         Column(
             modifier = Modifier
@@ -53,90 +44,67 @@ fun LoginScreen(onLoginClick: () -> Unit) {
             Image(
                 painter = painterResource(id = R.drawable.logogs),
                 contentDescription = "Logo",
-                modifier = Modifier
-                    .size(180.dp)
+                modifier = Modifier.size(180.dp)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = "¡Bienvenido!",
                 fontSize = 28.sp,
-                color = Color.White
+                color = Color(0xFFFFFFFF)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = "Control que impulsa proyectos",
                 fontSize = 16.sp,
-                color = Color.White.copy(alpha = 0.9f)
+                color = Color(0xFFFFFFFF).copy(alpha = 0.9f)
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
-            Card(
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(8.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
+            AuthCard(title = "Iniciar sesión") {
 
-                Column(
-                    modifier = Modifier.padding(24.dp)
-                ) {
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = { username = it },
+                    label = { Text("Usuario o correo") },
+                    leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-                    Text(
-                        text = "Iniciar sesión",
-                        fontSize = 22.sp
-                    )
+                Spacer(modifier = Modifier.height(16.dp))
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Contraseña") },
+                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                    trailingIcon = { Icon(Icons.Default.Visibility, contentDescription = null) },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-                    OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
-                        label = { Text("Usuario o correo") },
-                        leadingIcon = {
-                            Icon(Icons.Default.Person, null)
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
-                    )
+                Spacer(modifier = Modifier.height(10.dp))
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "¿Olvidaste tu contraseña?",
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .clickable { onForgotPasswordClick() }
+                        .padding(vertical = 6.dp)
+                )
 
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text("Contraseña") },
-                        leadingIcon = {
-                            Icon(Icons.Default.Lock, null)
-                        },
-                        trailingIcon = {
-                            Icon(Icons.Default.Visibility, null)
-                        },
-                        visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
-                    )
+                Spacer(modifier = Modifier.height(18.dp))
 
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Text(
-                        text = "¿Olvidaste tu contraseña?",
-                        fontSize = 14.sp,
-                        color = Color.Gray
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    GradientButton(
-                        text = "Iniciar",
-                        onClick = { onLoginClick() }
-                    )
-                }
+                GradientButton(
+                    text = "Iniciar",
+                    onClick = onLoginClick
+                )
             }
         }
     }
