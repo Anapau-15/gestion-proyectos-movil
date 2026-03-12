@@ -23,11 +23,14 @@ import mx.edu.utez.gestionproyectos.ui.components.AuthBackground
 import mx.edu.utez.gestionproyectos.ui.components.AuthCard
 import mx.edu.utez.gestionproyectos.ui.components.GradientButton
 
+// In LoginScreen.kt
 @Composable
 fun LoginScreen(
     onLoginClick: () -> Unit,
-    onForgotPasswordClick: () -> Unit
+    onForgotPasswordClick: () -> Unit = {} // Adding = {} makes it optional
 ) {
+    // ...
+
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 

@@ -1,18 +1,16 @@
 package mx.edu.utez.gestionproyectos.ui.projects
 
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.Color
 import mx.edu.utez.gestionproyectos.ui.home.HomeHeader
 
 @Composable
@@ -53,7 +51,15 @@ fun ProjectsScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             TabRow(
-                selectedTabIndex = selectedTab
+                selectedTabIndex = selectedTab,
+                containerColor = Color.Transparent,
+                contentColor = Color(0xFF1A4759),
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
+                        color = Color(0xFF1A4759)
+                    )
+                }
             ) {
 
                 tabs.forEachIndexed { index, title ->
@@ -61,7 +67,12 @@ fun ProjectsScreen() {
                     Tab(
                         selected = selectedTab == index,
                         onClick = { selectedTab = index },
-                        text = { Text(title) }
+                        text = {
+                            Text(
+                                text = title,
+                                color = Color(0xFF1A4759)
+                            )
+                        }
                     )
                 }
             }

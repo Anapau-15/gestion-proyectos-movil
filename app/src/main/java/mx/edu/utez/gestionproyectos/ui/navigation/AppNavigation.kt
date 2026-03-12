@@ -14,7 +14,9 @@ import mx.edu.utez.gestionproyectos.ui.team.TeamScreen
 import mx.edu.utez.gestionproyectos.ui.profile.ProfileScreen
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(
+    onLogout: () -> Unit
+) {
 
     val navController = rememberNavController()
 
@@ -82,7 +84,12 @@ fun AppNavigation() {
             composable(Screen.Projects.route) { ProjectsScreen() }
             composable(Screen.Deposits.route) { DepositsScreen() }
             composable(Screen.Team.route) { TeamScreen() }
-            composable(Screen.Profile.route) { ProfileScreen() }
+            composable(Screen.Profile.route) {
+                ProfileScreen(
+                    onLogout = onLogout
+                )
+
+            }
         }
     }
 }

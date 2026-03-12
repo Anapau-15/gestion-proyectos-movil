@@ -7,17 +7,17 @@ import androidx.navigation.compose.rememberNavController
 fun RootNavigation() {
 
     var isLoggedIn by remember { mutableStateOf(false) }
+    val authNavController = rememberNavController()
 
     if (isLoggedIn) {
-
-        AppNavigation()
-
+        AppNavigation(
+            onLogout = {
+                isLoggedIn = false
+            }
+        )
     } else {
-
-        val navController = rememberNavController()
-
         AuthNavigation(
-            navController = navController,
+            navController = authNavController,
             onLoginSuccess = {
                 isLoggedIn = true
             }
