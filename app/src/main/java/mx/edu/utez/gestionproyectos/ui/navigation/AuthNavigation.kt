@@ -25,12 +25,13 @@ fun AuthNavigation(
 
         composable(AuthRoutes.LOGIN) {
             LoginScreen(
-                onLoginClick = {
-                    onLoginSuccess()
+                onLoginSuccess = {
+                    onLoginSuccess() // Esto es lo que se ejecuta cuando el login es correcto
                 },
                 onForgotPasswordClick = {
                     navController.navigate(AuthRoutes.FORGOT)
                 }
+                // El viewModel se carga solito porque tiene un valor por defecto
             )
         }
 

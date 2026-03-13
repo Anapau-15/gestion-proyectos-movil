@@ -124,10 +124,11 @@ fun ProfileScreen(
                     ProfileOption(
                         icon = Icons.Default.Logout,
                         text = "Cerrar sesión",
-                        color = Color.Red
-                    ) {
-                        showLogoutDialog = true
-                    }
+                        color = Color.Red,
+                        onClick = { // Pasamos el onClick de forma explícita
+                            showLogoutDialog = true
+                        }
+                    )
                 }
             }
         }
@@ -138,11 +139,12 @@ fun ProfileScreen(
             onCancel = { showLogoutDialog = false },
             onConfirm = {
                 showLogoutDialog = false
-                onLogout()
+                onLogout() // Esto debe llamar a isLoggedIn = false en RootNavigation
             }
         )
     }
 }
+
 @Composable
 fun LogoutDialog(
     onCancel: () -> Unit,
@@ -219,7 +221,7 @@ fun ProfileOption(
         )
 
         Icon(
-            imageVector = Icons.Default.KeyboardArrowDown,
+            imageVector = Icons.Default.ChevronRight, // Cambiado KeyboardArrowDown por ChevronRight que es más común en menús
             contentDescription = null
         )
     }
