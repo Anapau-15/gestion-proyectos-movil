@@ -4,6 +4,8 @@ import HomeMenuCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Payments
@@ -56,9 +58,9 @@ fun HomeScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             HomeMenuCard(
-                icon = Icons.Default.Groups,
-                text = "Mi equipo",
-                onClick = { navController.navigate(Screen.Team.route) }
+                icon = Icons.Default.Assignment,
+                text = "Mis Tareas",
+                onClick = { navController.navigate(Screen.Tasks.route) }
             )
 
             Spacer(modifier = Modifier.height(12.dp))

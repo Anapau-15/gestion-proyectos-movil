@@ -37,7 +37,7 @@ fun HomeHeader() {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
             Image(
-                painter = painterResource(id = R.drawable.logogs),
+                painter = painterResource(id = R.drawable.logoutez),
                 contentDescription = "Logo",
                 modifier = Modifier.height(60.dp)
             )

@@ -10,8 +10,8 @@ import androidx.navigation.compose.*
 import mx.edu.utez.gestionproyectos.ui.home.HomeScreen
 import mx.edu.utez.gestionproyectos.ui.projects.ProjectsScreen
 import mx.edu.utez.gestionproyectos.ui.deposits.DepositsScreen
-import mx.edu.utez.gestionproyectos.ui.team.TeamScreen
 import mx.edu.utez.gestionproyectos.ui.profile.ProfileScreen
+import mx.edu.utez.gestionproyectos.ui.tasks.TasksScreen
 
 @Composable
 fun AppNavigation(
@@ -32,7 +32,7 @@ fun AppNavigation(
                     Screen.Home,
                     Screen.Projects,
                     Screen.Deposits,
-                    Screen.Team,
+                    Screen.Tasks,
                     Screen.Profile
                 )
 
@@ -83,7 +83,7 @@ fun AppNavigation(
             composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.Projects.route) { ProjectsScreen() }
             composable(Screen.Deposits.route) { DepositsScreen() }
-            composable(Screen.Team.route) { TeamScreen() }
+            composable(Screen.Tasks.route) { TasksScreen() }
             composable(Screen.Profile.route) {
                 ProfileScreen(
                     onLogout = onLogout
