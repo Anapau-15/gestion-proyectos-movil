@@ -24,6 +24,7 @@ import mx.edu.utez.gestionproyectos.R
 import mx.edu.utez.gestionproyectos.ui.components.AuthBackground
 import mx.edu.utez.gestionproyectos.ui.components.AuthCard
 import mx.edu.utez.gestionproyectos.ui.components.GradientButton
+import mx.edu.utez.gestionproyectos.viewmodel.LoginViewModel
 
 @Composable
 

@@ -1,5 +1,6 @@
 package mx.edu.utez.gestionproyectos.ui.projects
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -22,9 +24,23 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ProjectCard(
     title: String,
-    progress: Float
-){
+    description: String,
+    progress: Float,
+    id: Int
+) {
 
+  val percent = (progress * 100).toInt()
+
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress,
+        label = "progressAnimation"
+    )
+
+    val status = when {
+        percent == 0 -> "Pendiente"
+        percent in 1..99 -> "En curso"
+        else -> "Finalizado"
+    }
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -37,15 +53,23 @@ fun ProjectCard(
         ) {
 
             Text(
-                text = "App Ecommerce",
+                text = "$title (#$id)",
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = description,
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             LinearProgressIndicator(
-                progress = 0.20f,
+                progress = animatedProgress,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(8.dp),
@@ -60,8 +84,15 @@ fun ProjectCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Text("En curso")
-                Text("15%")
+                Text(
+                    text = status,
+                    color = Color.Gray
+                )
+
+                Text(
+                    text = "$percent%",
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
     }

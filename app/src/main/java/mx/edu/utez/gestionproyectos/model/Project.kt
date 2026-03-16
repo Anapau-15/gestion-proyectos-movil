@@ -1,9 +1,19 @@
 package mx.edu.utez.gestionproyectos.model
 
+import com.google.gson.annotations.SerializedName
 
 data class Project(
-    val id: Int,
-    val name: String,
-    val description: String,
-    val status: String
+
+    @SerializedName("idProyecto")
+    val idProyecto: Int,
+
+    @SerializedName("nombre")
+    val nombre: String,
+
+    @SerializedName("descripcion")
+    val descripcion: String,
+
+    @SerializedName("estado")
+    val estado: String
+
 )

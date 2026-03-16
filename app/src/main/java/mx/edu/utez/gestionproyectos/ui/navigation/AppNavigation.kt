@@ -1,5 +1,6 @@
 package mx.edu.utez.gestionproyectos.ui.navigation
 
+import DepositsScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -9,7 +10,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.*
 import mx.edu.utez.gestionproyectos.ui.home.HomeScreen
 import mx.edu.utez.gestionproyectos.ui.projects.ProjectsScreen
-import mx.edu.utez.gestionproyectos.ui.deposits.DepositsScreen
 import mx.edu.utez.gestionproyectos.ui.profile.ProfileScreen
 import mx.edu.utez.gestionproyectos.ui.tasks.TasksScreen
 

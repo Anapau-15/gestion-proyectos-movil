@@ -52,7 +52,9 @@ fun HomeScreen(navController: NavController) {
 
             ProjectCard(
                 title = "App Ecomerce",
-                progress = 0.15f
+                progress = 0.15f,
+                id = 1,
+                description = "Hola"
             )
 
             Spacer(modifier = Modifier.height(20.dp))

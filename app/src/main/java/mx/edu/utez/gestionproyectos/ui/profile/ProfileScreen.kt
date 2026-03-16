@@ -111,16 +111,13 @@ fun ProfileScreen(
 
                     Divider()
 
-                    ProfileOption(
-                        icon = Icons.Default.Edit,
-                        text = "Editar perfil"
-                    )
+                   /*
 
                     ProfileOption(
                         icon = Icons.Default.Lock,
                         text = "Cambiar contraseña"
                     )
-
+*/
                     ProfileOption(
                         icon = Icons.Default.Logout,
                         text = "Cerrar sesión",
