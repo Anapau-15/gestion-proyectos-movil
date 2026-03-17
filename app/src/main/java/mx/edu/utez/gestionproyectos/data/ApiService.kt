@@ -1,15 +1,7 @@
 package mx.edu.utez.gestionproyectos.data
 
-import mx.edu.utez.gestionproyectos.model.Deposit
-import mx.edu.utez.gestionproyectos.model.LoginRequest
-import mx.edu.utez.gestionproyectos.model.LoginResponse
-import mx.edu.utez.gestionproyectos.model.Project
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Headers
-import retrofit2.http.POST
-import retrofit2.http.Path
+import mx.edu.utez.gestionproyectos.model.*
+import retrofit2.http.*
 
 interface ApiService {
 
@@ -37,5 +29,19 @@ interface ApiService {
     suspend fun getDeposits(
         @Header("Authorization") token: String
     ): ApiResponse<List<Deposit>>
+
+
+    @GET("tareas/mis-tareas")
+    suspend fun getMyTasks(
+        @Header("Authorization") token: String
+    ): ApiResponse<List<Task>>
+
+
+    @PATCH("tareas/{id}/estado")
+    suspend fun updateTaskStatus(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+        @Query("estado") estado: String
+    ): ApiResponse<String>
 
 }
