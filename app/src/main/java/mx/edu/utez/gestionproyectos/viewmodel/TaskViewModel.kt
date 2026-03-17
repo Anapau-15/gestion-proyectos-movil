@@ -1,6 +1,5 @@
 package mx.edu.utez.gestionproyectos.viewmodel
 
-
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,7 +26,6 @@ class TaskViewModel : ViewModel() {
                 if (!response.error) {
 
                     tasks.clear()
-
                     response.data?.let {
                         tasks.addAll(it)
                     }
@@ -35,7 +33,9 @@ class TaskViewModel : ViewModel() {
                 }
 
             } catch (e: Exception) {
+
                 e.printStackTrace()
+
             }
 
         }
@@ -56,13 +56,17 @@ class TaskViewModel : ViewModel() {
                     estado
                 )
 
+                // recargar tareas
                 loadTasks()
 
             } catch (e: Exception) {
+
                 e.printStackTrace()
+
             }
 
         }
 
     }
+
 }
