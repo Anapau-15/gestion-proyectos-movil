@@ -14,6 +14,9 @@ data class Project(
     val descripcion: String,
 
     @SerializedName("estado")
-    val estado: String
+    val estado: String,
+
+    @SerializedName("progreso")
+    val progreso: Int
 
 )

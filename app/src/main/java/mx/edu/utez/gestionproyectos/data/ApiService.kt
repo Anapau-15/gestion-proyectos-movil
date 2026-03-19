@@ -44,4 +44,9 @@ interface ApiService {
         @Query("estado") estado: String
     ): ApiResponse<String>
 
+    @GET("usuarios/mi-perfil")
+    suspend fun getUser(
+        @Header("Authorization") token: String
+    ): ApiResponse<User>
+
 }

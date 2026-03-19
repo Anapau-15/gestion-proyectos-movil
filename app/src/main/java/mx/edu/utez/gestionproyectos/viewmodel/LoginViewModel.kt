@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import mx.edu.utez.gestionproyectos.data.RetrofitClient
 import mx.edu.utez.gestionproyectos.data.SessionManager
 import mx.edu.utez.gestionproyectos.model.LoginRequest
+import mx.edu.utez.gestionproyectos.data.utils.decodeJWT
 
 class LoginViewModel : ViewModel() {
 
@@ -19,39 +20,61 @@ class LoginViewModel : ViewModel() {
     var isSuccess by mutableStateOf(false)
 
     fun login(username: String, password: String) {
+
         if (username.isBlank() || password.isBlank()) {
             errorMessage = "Por favor, llena todos los campos"
             return
         }
 
         viewModelScope.launch {
+
             isLoading = true
             errorMessage = null
 
             try {
-                val response = withContext(Dispatchers.IO) {
-                    RetrofitClient.apiService.login(LoginRequest(username, password))
 
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitClient.apiService.login(
+                        LoginRequest(username, password)
+                    )
                 }
 
-                println("DEBUG_LOGIN: JSON Recibido -> $response")
+                println("DEBUG_LOGIN: $response")
 
-                // Comprobamos si el status es "200 OK" o si hay un token
-                if (response.data?.token != null || response.mensaje == "Éxito" || response.status == "200 OK") {
-                    SessionManager.token = response.data?.token ?: ""
+                val token = response.data?.token
 
-                    println("TOKEN_GUARDADO: ${SessionManager.token}")
+                if (!token.isNullOrEmpty()) {
+
+                    SessionManager.token = token
+
+                    val json = decodeJWT(token)
+
+                    SessionManager.nombre = json.optString("nombre", "Usuario")
+                    SessionManager.rol = json.optString("rol", "Sin rol")
+
+                    // ⚠️ TEMPORAL (porque no tienes correo real)
+                    SessionManager.correo = json.optString("sub", "usuario")
+
+                    println("NOMBRE: ${SessionManager.nombre}")
+                    println("ROL: ${SessionManager.rol}")
+                    println("CORREO: ${SessionManager.correo}")
+
                     isSuccess = true
                 } else {
                     errorMessage = response.mensaje ?: "Credenciales incorrectas"
                 }
+
             } catch (e: Exception) {
+
                 e.printStackTrace()
-                println("DEBUG_LOGIN: Error detectado: ${e.message}")
-                errorMessage = "Error de conexión o de servidor"
+                errorMessage = "Error de conexión o servidor"
+
             } finally {
+
                 isLoading = false
+
             }
+
         }
     }
 }
