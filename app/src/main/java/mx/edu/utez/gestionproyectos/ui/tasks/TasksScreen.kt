@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import mx.edu.utez.gestionproyectos.model.Task
+import mx.edu.utez.gestionproyectos.ui.components.ScreenWithLoader
 import mx.edu.utez.gestionproyectos.ui.home.HomeHeader
 import mx.edu.utez.gestionproyectos.viewmodel.TaskViewModel
 
@@ -26,6 +27,7 @@ fun TasksScreen(
 ) {
 
     val tasks = viewModel.tasks
+    val loading = viewModel.loading
 
     LaunchedEffect(Unit) {
         viewModel.loadTasks()
@@ -39,46 +41,44 @@ fun TasksScreen(
 
         HomeHeader()
 
-        Column(
-            modifier = Modifier
-                .padding(24.dp)
-                .fillMaxWidth()
+        // 🔥 COMPONENTE REUTILIZABLE (LOADER + SCROLL)
+        ScreenWithLoader(
+            loading = loading,
+            modifier = Modifier.padding(24.dp)
         ) {
 
-            Text(
-                text = "Mis Tareas",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1A3B5D)
-            )
+            // 🔥 HEADER
+            item {
 
-            Text(
-                text = "Tareas asignadas",
-                fontSize = 18.sp,
-                color = Color.Gray,
-                modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
-            )
+                Text(
+                    text = "Mis Tareas",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1A3B5D)
+                )
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-
-                items(tasks) { task ->
-
-                    TaskCard(
-                        task = task,
-                        onStatusChange = { estado ->
-                            viewModel.updateStatus(task.idTarea, estado)
-                        }
-                    )
-
-                }
+                Text(
+                    text = "Tareas asignadas",
+                    fontSize = 18.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
+                )
             }
 
+            // 🔥 LISTA DE TAREAS
+            items(tasks) { task ->
+
+                TaskCard(
+                    task = task,
+                    onStatusChange = { estado ->
+                        viewModel.updateStatus(task.idTarea, estado)
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
-
     }
-
 }
 
 
