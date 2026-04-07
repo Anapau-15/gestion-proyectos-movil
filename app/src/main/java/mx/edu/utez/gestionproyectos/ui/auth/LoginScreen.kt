@@ -1,6 +1,5 @@
 package mx.edu.utez.gestionproyectos.ui.auth
 
-import android.R.attr.password
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,15 +7,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.VisibilityOff // Importante para el ojo tachado
+import androidx.compose.material3.*
+import androidx.compose.runtime.* // Esto arregla el "mutableStateOf"
+// 🔥 ESTAS DOS SON LAS QUE ARREGLAN EL ERROR DEL "by"
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -27,26 +29,24 @@ import mx.edu.utez.gestionproyectos.ui.components.GradientButton
 import mx.edu.utez.gestionproyectos.viewmodel.LoginViewModel
 
 @Composable
-
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onForgotPasswordClick: () -> Unit = {},
     viewModel: LoginViewModel = viewModel()
-)
-{
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    // 1. Agregamos el estado para la visibilidad
+    var passwordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel.isSuccess) {
         if (viewModel.isSuccess) {
             onLoginSuccess()
         }
-
     }
 
-
     AuthBackground {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -54,7 +54,7 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
+            // ... (Logo y textos de bienvenida se mantienen igual)
             Image(
                 painter = painterResource(id = R.drawable.logogs),
                 contentDescription = "Logo",
@@ -63,24 +63,19 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text(
-                text = "¡Bienvenido!",
-                fontSize = 28.sp,
-                color = Color(0xFFFFFFFF)
-            )
+            Text(text = "¡Bienvenido!", fontSize = 28.sp, color = Color.White)
 
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = "Control que impulsa proyectos",
                 fontSize = 16.sp,
-                color = Color(0xFFFFFFFF).copy(alpha = 0.9f)
+                color = Color.White.copy(alpha = 0.9f)
             )
 
             Spacer(modifier = Modifier.height(28.dp))
 
             AuthCard(title = "Iniciar sesión") {
-
                 OutlinedTextField(
                     value = username,
                     onValueChange = { username = it },
@@ -91,16 +86,34 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // 2. Modificamos el campo de Contraseña
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
                     label = { Text("Contraseña") },
                     leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                    trailingIcon = { Icon(Icons.Default.Visibility, contentDescription = null) },
-                    visualTransformation = PasswordVisualTransformation(),
+
+                    // 3. Cambiamos el icono estático por uno interactivo
+                    trailingIcon = {
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                // Cambiamos el icono según el estado booleano
+                                imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                            )
+                        }
+                    },
+
+                    // 4. Cambiamos la transformación según el estado
+                    visualTransformation = if (passwordVisible)
+                        VisualTransformation.None
+                    else
+                        PasswordVisualTransformation(),
+
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                // ... (El resto del código: Botón, Error y Loader se mantienen igual)
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
@@ -120,14 +133,10 @@ fun LoginScreen(
                     onClick = {
                         if (username.isNotEmpty() && password.isNotEmpty()) {
                             viewModel.login(username, password)
-                        } else {
-                            // Aquí podrías mostrar un mensaje de "Llena los campos"
-                            println("Campos vacíos")
                         }
                     }
                 )
 
-                // Dentro de AuthCard en LoginScreen.kt
                 if (viewModel.errorMessage != null) {
                     Text(
                         text = viewModel.errorMessage!!,
@@ -138,7 +147,10 @@ fun LoginScreen(
                 }
 
                 if (viewModel.isLoading) {
-                    Text("Cargando...", color = Color.White) // O un CircularProgressIndicator
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp).padding(top = 8.dp),
+                        color = Color(0xFF3A7C78)
+                    )
                 }
             }
         }

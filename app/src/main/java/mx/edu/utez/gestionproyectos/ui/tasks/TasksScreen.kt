@@ -1,31 +1,29 @@
-package mx.edu.utez.gestionproyectos.ui.tasks
-
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import mx.edu.utez.gestionproyectos.model.Task
 import mx.edu.utez.gestionproyectos.ui.components.ScreenWithLoader
 import mx.edu.utez.gestionproyectos.ui.home.HomeHeader
+import mx.edu.utez.gestionproyectos.ui.tasks.TaskCard
 import mx.edu.utez.gestionproyectos.viewmodel.TaskViewModel
 
 @Composable
 fun TasksScreen(
     viewModel: TaskViewModel = viewModel()
 ) {
-
     val tasks = viewModel.tasks
     val loading = viewModel.loading
 
@@ -38,107 +36,50 @@ fun TasksScreen(
             .fillMaxSize()
             .background(Color(0xFFF8F9FA))
     ) {
-
+        // El Header se queda fijo arriba
         HomeHeader()
 
-        // 🔥 COMPONENTE REUTILIZABLE (LOADER + SCROLL)
-        ScreenWithLoader(
-            loading = loading,
-            modifier = Modifier.padding(24.dp)
-        ) {
+        // El Box con weight(1f) es el truco: obliga al resto del contenido
+        // a ocupar el espacio sobrante y permite que la LazyColumn interna haga scroll.
+        Box(modifier = Modifier.weight(1f)) {
+            ScreenWithLoader(
+                loading = loading,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                // Header de la lista
+                item {
+                    Text(
+                        text = "Mis Tareas",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1A3B5D)
+                    )
 
-            // 🔥 HEADER
-            item {
+                    Text(
+                        text = "Tareas asignadas",
+                        fontSize = 18.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
+                    )
+                }
 
-                Text(
-                    text = "Mis Tareas",
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A3B5D)
-                )
+                // Lista de tareas
+                items(tasks) { task ->
+                    TaskCard(
+                        task = task,
+                        onStatusChange = { estado ->
+                            viewModel.updateStatus(task.idTarea, estado)
+                        }
+                    )
 
-                Text(
-                    text = "Tareas asignadas",
-                    fontSize = 18.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
-                )
-            }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
-            // 🔥 LISTA DE TAREAS
-            items(tasks) { task ->
-
-                TaskCard(
-                    task = task,
-                    onStatusChange = { estado ->
-                        viewModel.updateStatus(task.idTarea, estado)
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
+                // Espacio extra al final para que la última tarjeta no quede al ras
+                item {
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
             }
         }
     }
-}
-
-
-
-@Composable
-fun DateRow(
-    label: String,
-    date: String
-) {
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        Icon(
-            imageVector = Icons.Default.CalendarMonth,
-            contentDescription = null,
-            tint = Color.DarkGray,
-            modifier = Modifier.size(20.dp)
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Column {
-
-            Text(
-                text = label,
-                fontSize = 12.sp,
-                color = Color.Gray
-            )
-
-            Text(
-                text = date,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF37474F)
-            )
-
-        }
-
-    }
-
-}
-
-@Composable
-fun StatusButton(
-    text: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-
-    Button(
-        onClick = onClick,
-        modifier = modifier
-    ) {
-        Text(
-            text = text,
-            fontSize = 13.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
-
 }

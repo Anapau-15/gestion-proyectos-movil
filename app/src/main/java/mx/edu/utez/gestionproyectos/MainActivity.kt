@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import mx.edu.utez.gestionproyectos.ui.auth.LoginScreen
 import mx.edu.utez.gestionproyectos.ui.navigation.AppNavigation
 import mx.edu.utez.gestionproyectos.ui.navigation.RootNavigation
 import mx.edu.utez.gestionproyectos.ui.theme.GestionProyectosTheme

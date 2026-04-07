@@ -124,3 +124,39 @@ fun TaskCard(
 
     }
 }
+
+@Composable
+fun DateRow(label: String, date: String?) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = "$label: ",
+            color = Color.Gray,
+            fontSize = 14.sp
+        )
+        Text(
+            text = date ?: "---",
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+@Composable
+fun StatusButton(
+    text: String,
+    onClick: () -> Unit
+) {
+    Surface(
+        onClick = onClick,
+        color = Color(0xFFF1F1F1),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.DarkGray
+        )
+    }
+}

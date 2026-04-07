@@ -17,35 +17,26 @@ class TaskViewModel : ViewModel() {
     var loading by mutableStateOf(true)
 
     fun loadTasks() {
-
         viewModelScope.launch {
-
+            loading = true // Aseguramos que empiece cargando
             try {
-
                 val token = SessionManager.token
-
-                val response =
-                    RetrofitClient.apiService.getMyTasks("Bearer $token")
+                val response = RetrofitClient.apiService.getMyTasks("Bearer $token")
 
                 if (!response.error) {
-
                     tasks.clear()
                     response.data?.let {
                         tasks.addAll(it)
                     }
-
                 }
-
             } catch (e: Exception) {
-
                 e.printStackTrace()
-
+            } finally {
+                // 🔥 ESTO ES VITAL: Pase lo que pase, dejamos de cargar
+                loading = false
             }
-
         }
-
     }
-
     fun updateStatus(id: Int, estado: String) {
 
         viewModelScope.launch {
