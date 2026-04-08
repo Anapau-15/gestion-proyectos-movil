@@ -32,7 +32,6 @@ class TaskViewModel : ViewModel() {
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
-                // 🔥 ESTO ES VITAL: Pase lo que pase, dejamos de cargar
                 loading = false
             }
         }
