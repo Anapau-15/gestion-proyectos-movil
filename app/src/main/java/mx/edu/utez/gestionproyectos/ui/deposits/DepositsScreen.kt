@@ -133,7 +133,9 @@ fun DepositsScreen(
                         contentAlignment = Alignment.Center
                     ) {
 
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(
+                            color = Color(0xFF3A7C78)
+                        )
 
                     }
 
@@ -169,7 +171,8 @@ fun DepositsScreen(
                                 title = deposit.proyecto?.nombre ?: "Proyecto",
                                 type = deposit.concepto ?: "",
                                 date = deposit.fechaPago ?: "",
-                                amount = "$${deposit.monto}"
+                                amount = "$${deposit.monto}",
+                                periodo = deposit.periodo
                             )
 
                         }

@@ -23,12 +23,12 @@ class ProjectViewModel : ViewModel() {
     var errorMsg by mutableStateOf<String?>(null)
 
     fun loadProjects() {
-        if (isLoading) return // Evitar múltiples llamadas simultáneas
+        if (isLoading) return
 
         viewModelScope.launch {
             isLoading = true
             errorMsg = null
-            
+
             println("DEBUG_PROJECTS: Iniciando carga...")
             println("DEBUG_PROJECTS: Token actual -> ${SessionManager.token}")
 
@@ -43,7 +43,7 @@ class ProjectViewModel : ViewModel() {
                 val response = RetrofitClient.apiService.getProjects(
                     token = "Bearer ${SessionManager.token}"
                 )
-                
+
                 println("DEBUG_PROJECTS: Status -> ${response.status}")
                 println("DEBUG_PROJECTS: Cantidad de proyectos -> ${response.data?.size ?: 0}")
 
@@ -51,23 +51,14 @@ class ProjectViewModel : ViewModel() {
                     val result = mutableListOf<ProjectWithProgress>()
 
                     response.data?.forEach { project ->
-                        try {
-                            val progressResponse = RetrofitClient.apiService.getProjectProgress(
-                                token = "Bearer ${SessionManager.token}",
-                                id = project.idProyecto
-                            )
-                            
-                            val progress = if (progressResponse.status == "200 OK") {
-                                progressResponse.data ?: 0f
-                            } else {
-                                0f
-                            }
+                        println("DEBUG_JSON_PROJECT: $project")
 
-                            result.add(ProjectWithProgress(project = project, progress = progress))
-                        } catch (e: Exception) {
-                            println("DEBUG_PROJECTS: Error cargando progreso para ID ${project.idProyecto}")
-                            result.add(ProjectWithProgress(project = project, progress = 0f))
-                        }
+                        val progress = project.progreso.toFloat()
+                        println("DEBUG_PROGRESS: Proyecto ${project.nombre} (ID: ${project.idProyecto})")
+                        println("DEBUG_PROGRESS: progreso raw -> ${project.progreso}")
+                        println("DEBUG_PROGRESS: progress Float -> $progress%")
+
+                        result.add(ProjectWithProgress(project = project, progress = progress))
                     }
 
                     projects = result
@@ -89,5 +80,4 @@ class ProjectViewModel : ViewModel() {
                 isLoading = false
             }
         }
-    }
-}
+    }}

@@ -14,38 +14,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.launch
-import mx.edu.utez.gestionproyectos.data.RetrofitClient
 import mx.edu.utez.gestionproyectos.data.SessionManager
-import mx.edu.utez.gestionproyectos.model.Project
 import mx.edu.utez.gestionproyectos.ui.navigation.Screen
 import mx.edu.utez.gestionproyectos.ui.projects.ProjectCard
+import mx.edu.utez.gestionproyectos.viewmodel.ProjectViewModel
 
 @Composable
 fun HomeScreen(navController: NavController) {
 
-    var proyecto by remember { mutableStateOf<Project?>(null) }
-    var loading by remember { mutableStateOf(true) }
+    val projectViewModel: ProjectViewModel = viewModel()
 
-    val scope = rememberCoroutineScope()
-
-    // 🔥 LLAMADA AL BACKEND
     LaunchedEffect(Unit) {
-        scope.launch {
-            try {
-                val response = RetrofitClient.apiService.getProjects(
-                    "Bearer ${SessionManager.token}"
-                )
-
-                proyecto = response.data?.firstOrNull()
-                loading = false
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-                loading = false
-            }
-        }
+        projectViewModel.loadProjects()
     }
 
     Column(
@@ -75,8 +57,7 @@ fun HomeScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 🔥 PROYECTO DINÁMICO
-            if (loading) {
+            if (projectViewModel.isLoading) {
 
                 Box(
                     modifier = Modifier.fillMaxWidth(),
@@ -89,13 +70,13 @@ fun HomeScreen(navController: NavController) {
 
             } else {
 
-                proyecto?.let { p ->
+                projectViewModel.projects.firstOrNull()?.let { projectWithProgress ->
 
                     ProjectCard(
-                        title = p.nombre,
-                        progress = p.progreso / 100f,
-                        id = p.idProyecto,
-                        description = p.descripcion
+                        title = projectWithProgress.project.nombre,
+                        progress = projectWithProgress.progress / 100f,
+                        id = projectWithProgress.project.idProyecto,
+                        description = projectWithProgress.project.descripcion
                     )
 
                 } ?: Text("No tienes proyectos")

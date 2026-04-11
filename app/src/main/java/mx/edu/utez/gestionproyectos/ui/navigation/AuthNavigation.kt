@@ -1,9 +1,11 @@
 package mx.edu.utez.gestionproyectos.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import mx.edu.utez.gestionproyectos.ui.auth.*
+import mx.edu.utez.gestionproyectos.viewmodel.LoginViewModel
 
 object AuthRoutes {
     const val LOGIN = "login"
@@ -12,12 +14,14 @@ object AuthRoutes {
     const val RESET = "reset"
 }
 
-
 @Composable
 fun AuthNavigation(
     navController: NavHostController,
     onLoginSuccess: () -> Unit
 ) {
+    // 🔥 CREAR UNA SOLA INSTANCIA DEL VIEWMODEL
+    val loginViewModel: LoginViewModel = viewModel()
+
     NavHost(
         navController = navController,
         startDestination = AuthRoutes.LOGIN
@@ -26,17 +30,17 @@ fun AuthNavigation(
         composable(AuthRoutes.LOGIN) {
             LoginScreen(
                 onLoginSuccess = {
-                    onLoginSuccess() // Esto es lo que se ejecuta cuando el login es correcto
+                    onLoginSuccess()
                 },
                 onForgotPasswordClick = {
                     navController.navigate(AuthRoutes.FORGOT)
                 }
-                // El viewModel se carga solito porque tiene un valor por defecto
             )
         }
 
         composable(AuthRoutes.FORGOT) {
             ForgotPasswordScreen(
+                viewModel = loginViewModel,  // ← PASAR AQUÍ
                 onBack = { navController.popBackStack() },
                 onNext = {
                     navController.navigate(AuthRoutes.VERIFY)
@@ -46,6 +50,7 @@ fun AuthNavigation(
 
         composable(AuthRoutes.VERIFY) {
             VerifyCodeScreen(
+                viewModel = loginViewModel,  // ← PASAR AQUÍ
                 onBack = { navController.popBackStack() },
                 onNext = {
                     navController.navigate(AuthRoutes.RESET)
@@ -55,6 +60,7 @@ fun AuthNavigation(
 
         composable(AuthRoutes.RESET) {
             ResetPasswordScreen(
+                viewModel = loginViewModel,  // ← PASAR AQUÍ
                 onBack = { navController.popBackStack() },
                 onFinish = {
                     navController.navigate(AuthRoutes.LOGIN) {

@@ -1,32 +1,30 @@
 package mx.edu.utez.gestionproyectos.ui.auth
 
 import android.R.attr.onClick
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.lifecycle.viewmodel.compose.viewModel
 import mx.edu.utez.gestionproyectos.ui.components.AuthBackground
 import mx.edu.utez.gestionproyectos.ui.components.AuthCard
 import mx.edu.utez.gestionproyectos.ui.components.AuthLogo
 import mx.edu.utez.gestionproyectos.ui.components.GradientButton
+import mx.edu.utez.gestionproyectos.viewmodel.LoginViewModel
 
 @Composable
 fun VerifyCodeScreen(
     onBack: () -> Unit,
-    onNext: () -> Unit
+    onNext: () -> Unit,
+    viewModel: LoginViewModel = viewModel()
 ) {
 
-    var code by remember { mutableStateOf(List(6) { "" }) }
-    val focusRequesters = remember { List(6) { FocusRequester() } }
+    var token by remember { mutableStateOf("") }
+    var yaAvanzó by remember { mutableStateOf(false) }
 
     AuthBackground {
 
@@ -42,57 +40,73 @@ fun VerifyCodeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            AuthCard(title = "Restablecer Contraseña") {
+            AuthCard(title = "Verificar Código") {
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                repeat(6) { index ->
-                    OutlinedTextField(
-                        value = code[index],
-                        onValueChange = { value ->
-                            if (value.length <= 1) {
-                                val newCode = code.toMutableList()
-                                newCode[index] = value
-                                code = newCode
+                Text(
+                    text = "Copia el código que recibiste en tu correo electrónico",
+                    style = MaterialTheme.typography.bodyMedium
+                )
 
-                                // 2. Lógica de salto: si escribió algo, va al siguiente
-                                if (value.isNotEmpty() && index < 5) {
-                                    focusRequesters[index + 1].requestFocus()
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .width(48.dp)
-                            .focusRequester(focusRequesters[index]), // 3. Asignamos el foco
-                        singleLine = true,
-                        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center), // Centrar el número
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                Spacer(modifier = Modifier.height(20.dp))
+
+                OutlinedTextField(
+                    value = token,
+                    onValueChange = { token = it
+                        viewModel.errorMessage = null },
+                    label = { Text("Código de verificación") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                //  MOSTRAR ERRORES
+                viewModel.errorMessage?.let {
+                    Text(
+                        text = it,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth()
                     )
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
-            }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                //  PASAR A SIGUIENTE PANTALLA SI VÁLIDO
+                if (viewModel.tokenValido && !yaAvanzó) {
+                    yaAvanzó = true
+                    LaunchedEffect(Unit) {
+                        onNext()
+                    }
+                }
 
-            GradientButton(
-                text = "Verificar Código",
-                onClick = {val fullCode = code.joinToString("")
-            if (fullCode.length == 6) {
-                onNext() // Aquí llamarás al ViewModel después
-            }
-        }
-        )
+                GradientButton(
+                    text = if (viewModel.isLoading) "Verificando..." else "Verificar Código",
+                    onClick = {
+                        if (token.isNotEmpty()) {
+                            viewModel.errorMessage = null  //  LIMPIAR ERROR ANTERIOR
+                            viewModel.validateResetToken(token)
+                        }
+                    },
+                    enabled = !viewModel.isLoading && token.isNotEmpty()
+                )
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            OutlinedButton(
-                onClick = onBack,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Cancelar")
+                OutlinedButton(
+                    onClick = {
+                        token = ""
+                        yaAvanzó = false
+                        viewModel.clearMessages()
+                        viewModel.tokenValido = false
+                        viewModel.resetToken = null
+                        onBack()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Cancelar")
+                }
             }
         }
     }

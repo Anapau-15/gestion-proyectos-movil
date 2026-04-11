@@ -7,7 +7,8 @@ data class Deposit(
     val descripcion: String,
     val fechaPago: String,
     val monto: Double,
-    val proyecto: Proyecto
+    val proyecto: Proyecto,
+    val periodo: String?
 )
 
 data class Proyecto(

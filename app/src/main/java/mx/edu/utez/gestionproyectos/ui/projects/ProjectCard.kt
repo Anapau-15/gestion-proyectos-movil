@@ -29,7 +29,7 @@ fun ProjectCard(
     id: Int
 ) {
 
-  val percent = (progress * 100).toInt()
+    val percent = (progress * 100).toInt()
 
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
@@ -38,7 +38,7 @@ fun ProjectCard(
 
     val status = when {
         percent == 0 -> "Pendiente"
-        percent in 1..99 -> "En curso"
+        percent in 1..99 -> "Porcentaje de avance del proyecto"
         else -> "Finalizado"
     }
 

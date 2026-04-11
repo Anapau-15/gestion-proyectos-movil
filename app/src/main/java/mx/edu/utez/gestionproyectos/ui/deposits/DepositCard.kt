@@ -24,7 +24,8 @@ fun DepositCard(
     title: String,
     type: String,
     date: String,
-    amount: String
+    amount: String,
+    periodo: String?
 ) {
 
     Card(
@@ -56,6 +57,12 @@ fun DepositCard(
                         text = type,
                         color = Color(0xFF2F7E79)
                     )
+                    Text(
+                        text = "Fecha: ${periodo ?: "N/A"}",
+                        color = Color.Gray,
+                        fontSize = 12.sp
+                    )
+
 
                     Text(
                         text = "Depósito: $date",

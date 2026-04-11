@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -18,7 +19,8 @@ import androidx.compose.ui.unit.sp
 fun GradientButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
 
     val gradient = Brush.horizontalGradient(
@@ -36,7 +38,8 @@ fun GradientButton(
                 brush = gradient,
                 shape = RoundedCornerShape(30.dp)
             )
-            .clickable { onClick() },
+            .clickable(enabled = enabled) { onClick() }
+            .alpha(if (enabled) 1f else 0.5f),
         contentAlignment = Alignment.Center
     ) {
         Text(

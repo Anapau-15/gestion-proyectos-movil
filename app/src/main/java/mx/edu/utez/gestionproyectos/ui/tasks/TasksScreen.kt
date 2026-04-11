@@ -24,24 +24,20 @@ import mx.edu.utez.gestionproyectos.viewmodel.TaskViewModel
 fun TasksScreen(viewModel: TaskViewModel = viewModel()) {
     val tasks = viewModel.tasks
     val loading = viewModel.loading
-    LaunchedEffect(tasks) {
-        if (tasks.isNotEmpty()) {
-            tasks.forEach { println("DEPURACION: Tarea: ${it.nombre} - Estado: ${it.estado}") }
-        }
-    }
 
-    // Iniciamos con PENDIENTE para asegurar que cargue algo al inicio
-    var selectedFilter by remember { mutableStateOf("TODAS") }
 
-    // Filtro robusto que ignora mayúsculas/minúsculas
+    var selectedFilter by remember { mutableStateOf("PENDIENTE") }
+
+
     val filteredTasks = tasks.filter { task ->
+        val estadoDB = task.estado.uppercase()
         when (selectedFilter) {
-            "PENDIENTE" -> task.estado.equals("PENDIENTE", ignoreCase = true)
-            "PROGRESO" -> task.estado.contains("PROGRESO", ignoreCase = true)
-            "FINALIZADA" -> task.estado.equals("COMPLETADA", ignoreCase = true)
+            "PENDIENTE" -> estadoDB == "PENDIENTE"
+            "PROGRESO"  -> estadoDB == "EN_PROGRESO" || estadoDB == "PROGRESO"
+            "FINALIZADA" -> estadoDB == "COMPLETADA" || estadoDB == "TERMINADO"
             else -> true
         }
-    }.ifEmpty { tasks }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.loadTasks()
@@ -51,7 +47,8 @@ fun TasksScreen(viewModel: TaskViewModel = viewModel()) {
         HomeHeader()
 
         Box(modifier = Modifier.weight(1f)) {
-            ScreenWithLoader(loading = loading, modifier = Modifier.fillMaxSize()) {
+            ScreenWithLoader(loading = loading,
+                modifier = Modifier.fillMaxSize(),) {
                 item {
                     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                         Text(
@@ -62,12 +59,11 @@ fun TasksScreen(viewModel: TaskViewModel = viewModel()) {
                         )
                         Spacer(modifier = Modifier.height(17.dp))
 
-                        // FILTROS PAREJOS
+                        // FILTROS PAREJOS CON PESO IGUAL
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)
                         ) {
-                            // Usamos weight(1f) en todos para que midan lo mismo
                             FilterChip(selectedFilter == "PENDIENTE", "Pendientes", Modifier.weight(1f)) { selectedFilter = "PENDIENTE" }
                             FilterChip(selectedFilter == "PROGRESO", "Progreso", Modifier.weight(1f)) { selectedFilter = "PROGRESO" }
                             FilterChip(selectedFilter == "FINALIZADA", "Terminada", Modifier.weight(1f)) { selectedFilter = "FINALIZADA" }
@@ -75,23 +71,33 @@ fun TasksScreen(viewModel: TaskViewModel = viewModel()) {
                     }
                 }
 
-                // Si la lista está vacía después de filtrar, mostramos un aviso
+                // 3. MENSAJE DE LISTA VACÍA: Ahora sí aparecerá si no hay tareas filtradas
                 if (filteredTasks.isEmpty() && !loading) {
                     item {
-                        Text(
-                            "No hay tareas en este estado",
-                            modifier = Modifier.padding(20.dp),
-                            color = Color.Gray
-                        )
+                        Box(
+                            modifier = Modifier.fillParentMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "No hay tareas en estado ${selectedFilter.lowercase()}",
+                                color = Color.Gray,
+                                fontSize = 16.sp
+                            )
+                        }
                     }
                 }
 
                 items(filteredTasks) { task ->
                     Box(modifier = Modifier.padding(horizontal = 20.dp)) {
-                        TaskCard(task = task, onStatusChange = { viewModel.updateStatus(task.idTarea, it) })
+                        TaskCard(task = task, onStatusChange = { nuevoEstado ->
+                            viewModel.updateStatus(task.idTarea, nuevoEstado)
+                        })
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
+
+                // Espacio extra al final para el scroll
+                item { Spacer(modifier = Modifier.height(80.dp)) }
             }
         }
     }

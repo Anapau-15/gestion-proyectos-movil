@@ -48,5 +48,19 @@ interface ApiService {
     suspend fun getUser(
         @Header("Authorization") token: String
     ): ApiResponse<User>
+ // Recuperar Contraseña
+    @POST("auth/forgot-password")
+    suspend fun forgotPassword(
+        @Body request: ForgotPasswordRequest
+    ): ApiResponse<String>
 
+    @GET("auth/validate-reset-token")
+    suspend fun validateResetToken(
+        @Query("token") token: String
+    ): ApiResponse<ValidateTokenResponse>
+
+    @POST("auth/reset-password")
+    suspend fun resetPassword(
+        @Body request: ResetPasswordRequest
+    ): ApiResponse<String>
 }

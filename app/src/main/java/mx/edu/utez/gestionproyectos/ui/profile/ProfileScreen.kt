@@ -115,7 +115,7 @@ fun ProfileScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             CircularProgressIndicator(
-                                color = Color(0xFF1A4759)
+                                color = Color(0xFF3A7C78)
                             )
 
                         }
