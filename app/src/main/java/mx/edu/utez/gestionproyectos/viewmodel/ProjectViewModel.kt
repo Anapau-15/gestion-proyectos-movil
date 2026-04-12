@@ -46,6 +46,8 @@ class ProjectViewModel : ViewModel() {
 
                 println("DEBUG_PROJECTS: Status -> ${response.status}")
                 println("DEBUG_PROJECTS: Cantidad de proyectos -> ${response.data?.size ?: 0}")
+                println("DEBUG_PROJECTS: RESPUESTA COMPLETA -> $response")
+                println("DEBUG_PROJECTS: LISTA DE DATOS -> ${response.data}")
 
                 if (response.status == "200 OK" || response.status == "success") {
                     val result = mutableListOf<ProjectWithProgress>()
@@ -53,10 +55,44 @@ class ProjectViewModel : ViewModel() {
                     response.data?.forEach { project ->
                         println("DEBUG_JSON_PROJECT: $project")
 
-                        val progress = project.progreso.toFloat()
-                        println("DEBUG_PROGRESS: Proyecto ${project.nombre} (ID: ${project.idProyecto})")
-                        println("DEBUG_PROGRESS: progreso raw -> ${project.progreso}")
-                        println("DEBUG_PROGRESS: progress Float -> $progress%")
+                        var progress = 0f
+                        try {
+                            // 🔑 CORREGIR: Obtener tareas del proyecto en lugar de progreso
+                            val tasksResponse = RetrofitClient.apiService.getProjectTasks(
+                                token = "Bearer ${SessionManager.token}",
+                                id = project.idProyecto
+                            )
+
+                            if (tasksResponse.status == "200 OK" || tasksResponse.status == "success") {
+                                val tareas = tasksResponse.data ?: emptyList()
+
+                                println("DEBUG_TASKS: Proyecto ${project.nombre} (ID: ${project.idProyecto})")
+                                println("DEBUG_TASKS: Total de tareas -> ${tareas.size}")
+
+                                if (tareas.isNotEmpty()) {
+                                    // Contar tareas completadas: TERMINADO + COMPLETADA
+                                    val completadas = tareas.count { tarea ->
+                                        val estado = tarea.estado?.uppercase() ?: ""
+                                        estado == "TERMINADO" || estado == "COMPLETADA"
+                                    }
+
+                                    // Calcular progreso: (completadas / total) * 100
+                                    progress = completadas.toFloat() / tareas.size
+                                    println("DEBUG_TASKS: Tareas completadas -> $completadas")
+                                    println("DEBUG_TASKS: Progreso calculado -> ${progress.toInt()}%")
+                                } else {
+                                    progress = 0f
+                                    println("DEBUG_TASKS: Sin tareas")
+                                }
+                            } else {
+                                println("DEBUG_TASKS: Error obteniendo tareas para proyecto ${project.idProyecto}")
+                                progress = 0f
+                            }
+                        } catch (e: Exception) {
+                            println("DEBUG_TASKS: Excepción obteniendo tareas -> ${e.localizedMessage}")
+                            e.printStackTrace()
+                            progress = 0f
+                        }
 
                         result.add(ProjectWithProgress(project = project, progress = progress))
                     }
@@ -80,4 +116,5 @@ class ProjectViewModel : ViewModel() {
                 isLoading = false
             }
         }
-    }}
+    }
+}

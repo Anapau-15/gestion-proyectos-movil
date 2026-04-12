@@ -60,8 +60,8 @@ fun TaskStateSection(
                     onClick = { onStatusChange("EN_PROGRESO") },
                     // Solo habilitado si el estado actual es PENDIENTE
                     enabled = estadoActual.uppercase() == "PENDIENTE" ,
-                    //estadoActual.uppercase() == "COMPLETADA" ||
-                      //      estadoActual.uppercase() == "TERMINADO",
+                    // estadoActual.uppercase() == "COMPLETADA" ||
+                           // estadoActual.uppercase() == "TERMINADO",
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.fillMaxWidth(), // Llena su tercio
                     colors = ButtonDefaults.buttonColors(

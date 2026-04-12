@@ -74,7 +74,7 @@ fun HomeScreen(navController: NavController) {
 
                     ProjectCard(
                         title = projectWithProgress.project.nombre,
-                        progress = projectWithProgress.progress / 100f,
+                        progress = projectWithProgress.progress ,
                         id = projectWithProgress.project.idProyecto,
                         description = projectWithProgress.project.descripcion
                     )

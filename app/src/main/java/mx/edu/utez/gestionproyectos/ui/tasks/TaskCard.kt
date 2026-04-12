@@ -35,6 +35,16 @@ fun TaskCard(
             )
 
             Spacer(modifier = Modifier.height(12.dp))
+            // 🔑 Descripción de la tarea
+            if (!task.descripcion.isNullOrBlank()) {
+                Text(
+                    text = task.descripcion,
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
 
             // Fila de Etiquetas (Prioridad y Estado)
             Row(

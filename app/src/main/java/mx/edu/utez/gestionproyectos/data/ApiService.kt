@@ -63,4 +63,10 @@ interface ApiService {
     suspend fun resetPassword(
         @Body request: ResetPasswordRequest
     ): ApiResponse<String>
+
+    @GET("tareas/proyecto/{id}")
+    suspend fun getProjectTasks(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): ApiResponse<List<Task>>
 }

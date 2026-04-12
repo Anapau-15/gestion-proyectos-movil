@@ -117,7 +117,7 @@ fun ProjectsScreen(
                                 ProjectCard(
                                     title = item.project.nombre,
                                     description = item.project.descripcion,
-                                    progress = item.progress / 100f,
+                                    progress = item.progress,
                                     id = item.project.idProyecto
                                 )
                             }
